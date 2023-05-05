@@ -1,6 +1,6 @@
 import { BaseResponseController } from '@/common/controller/BaseResponseController';
 import { RegisterDTO } from '@/dtos/users.dto';
-import { RequestWithUser } from '@/interfaces/auth.interface';
+import { RequestWithUser } from '@/common/interface/auth.interface';
 import { User } from '@interfaces/users.interface';
 import userService from '@services/users.service';
 import { NextFunction, Response } from 'express';

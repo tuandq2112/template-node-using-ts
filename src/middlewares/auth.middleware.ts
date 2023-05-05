@@ -1,6 +1,6 @@
 import { AuthException } from '@/common/exception/auth.exception';
 import JwtService from '@/common/service/jwt.service';
-import { RequestWithUser } from '@interfaces/auth.interface';
+import { RequestWithUser } from '@/common/interface/auth.interface';
 import UserModel from '@models/users.model';
 import { NextFunction, Response } from 'express';
 

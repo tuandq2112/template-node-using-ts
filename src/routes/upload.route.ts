@@ -1,7 +1,7 @@
 import UploadController from '@/controllers/upload.controller';
 import authMiddleware from '@/middlewares/auth.middleware';
 import upload from '@/upload';
-import { Routes } from '@interfaces/routes.interface';
+import { Routes } from '@/common/interface/routes.interface';
 import { Router } from 'express';
 
 class UploadRoute implements Routes {

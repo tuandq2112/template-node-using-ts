@@ -1,6 +1,6 @@
 import { CREDENTIALS, LOG_FORMAT, NODE_ENV, ORIGIN, PORT, TZ } from '@config';
 import { dbConnection } from '@databases';
-import { Routes } from '@interfaces/routes.interface';
+import { Routes } from '@/common/interface/routes.interface';
 import errorMiddleware from '@middlewares/error.middleware';
 import { logger, stream } from '@utils/logger';
 import compression from 'compression';
