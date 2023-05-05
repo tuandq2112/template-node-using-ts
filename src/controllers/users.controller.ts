@@ -1,41 +1,29 @@
-import { UpdateUserDTO } from '@/dtos/update.user.dto';
+import { BaseResponseController } from '@/common/controller/BaseResponseController';
+import { RegisterDTO } from '@/dtos/users.dto';
 import { RequestWithUser } from '@/interfaces/auth.interface';
 import { User } from '@interfaces/users.interface';
 import userService from '@services/users.service';
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
+import { Request } from 'express-serve-static-core';
 
-class UsersController {
+class UsersController extends BaseResponseController {
   public userService = new userService();
 
-  public getUsers = async (req: Request, res: Response, next: NextFunction) => {
+  public registerUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const findAllUsersData: User[] = await this.userService.findAllUser();
+      const registerDTO: RegisterDTO = req.body;
 
-      res.status(200).json({ data: findAllUsersData, message: 'findAll' });
+      const data: User = await this.userService.register(registerDTO);
+      this.response(res, data);
     } catch (error) {
       next(error);
     }
   };
 
-  public getUserByAddress = async (req: Request, res: Response, next: NextFunction) => {
+  public getCurrentUserInformation = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
-      const address: string = req.params.address;
-      const findOneUserData: User = await this.userService.findUserByAddress(address);
-
-      res.status(200).json({ data: findOneUserData, message: 'findOne' });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  public updateUser = async (req: RequestWithUser, res: Response, next: NextFunction) => {
-    try {
-      const address: string = req.user.address;
-      const userData: UpdateUserDTO = req.body as UpdateUserDTO;
-
-      const updateUserData: User = await this.userService.updateUser(address, userData);
-
-      res.status(200).json({ data: updateUserData, message: 'updated' });
+      const data: User = await this.userService.getCurrentInformation(req.user);
+      this.response(res, data);
     } catch (error) {
       next(error);
     }

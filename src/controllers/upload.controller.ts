@@ -1,4 +1,4 @@
-import { HttpException } from '@/exceptions/HttpException';
+import { HttpException } from '@/common/exception/http.exception';
 import { Request, Response } from 'express';
 
 class UploadController {

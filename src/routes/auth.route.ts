@@ -1,4 +1,4 @@
-import { JwtInfo } from '@/dtos/jwtInfo.dto';
+import { LoginDTO } from '@/dtos/users.dto';
 import AuthController from '@controllers/auth.controller';
 import { Routes } from '@interfaces/routes.interface';
 import validationMiddleware from '@middlewares/validation.middleware';
@@ -14,7 +14,7 @@ class AuthRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.post(`${this.path}login`, validationMiddleware(JwtInfo, 'body'), this.authController.logIn);
+    this.router.post(`${this.path}login`, validationMiddleware(LoginDTO, 'body'), this.authController.login);
   }
 }
 

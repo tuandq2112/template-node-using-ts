@@ -1,21 +1,33 @@
-import { JwtInfo } from '@/dtos/jwtInfo.dto';
-import { validateSignature } from '@/utils/ethers.utils';
-import { HttpException } from '@exceptions/HttpException';
-import { TokenData } from '@interfaces/auth.interface';
-import userModel from '@models/users.model';
-import JwtService from './jwt.service';
+import { LoginDTO } from '@/dtos/users.dto';
+import { UserException } from '@/exceptions/user.exception';
+import UserModel from '@models/users.model';
+import { compare } from 'bcrypt';
+import JwtService from '../common/service/jwt.service';
 
 class AuthService {
-  public users = userModel;
+  public model = UserModel;
 
-  public login(jwtInfo: JwtInfo): TokenData {
-    const isValidSignature = validateSignature(jwtInfo);
-    if (!isValidSignature) {
-      throw new HttpException(400, `Invalid Signature`);
+  public async login(loginDTO: LoginDTO): Promise<any> {
+    const findUser = await this.model.findOne({ username: loginDTO.username });
+    if (!findUser) {
+      UserException.userNotFound();
     }
 
-    const tokenData = JwtService.generateToken(jwtInfo);
-    return tokenData;
+    const userPassword = findUser.password;
+
+    const isVerify = await compare(loginDTO.password, userPassword);
+
+    if (!isVerify) {
+      UserException.passwordNotMatch();
+    }
+    const jwtData = findUser.toJSON();
+    const ignoreFields = ['password'];
+    for (const i of ignoreFields) {
+      delete jwtData[i];
+    }
+    const res = JwtService.generateToken(jwtData);
+
+    return { ...res, ...jwtData };
   }
 }
 

@@ -1,7 +1,7 @@
-import JwtService from '@/services/jwt.service';
-import { HttpException } from '@exceptions/HttpException';
+import { AuthException } from '@/common/exception/auth.exception';
+import JwtService from '@/common/service/jwt.service';
 import { RequestWithUser } from '@interfaces/auth.interface';
-import userModel from '@models/users.model';
+import UserModel from '@models/users.model';
 import { NextFunction, Response } from 'express';
 
 const authMiddleware = async (req: RequestWithUser, res: Response, next: NextFunction) => {
@@ -9,22 +9,22 @@ const authMiddleware = async (req: RequestWithUser, res: Response, next: NextFun
     const Authorization = req.header('Authorization') ? req.header('Authorization').split('Bearer ')[1] : null;
 
     if (Authorization) {
-      const verificationResponse = await JwtService.verifyToken(Authorization);
+      const verificationResponse = JwtService.verifyToken(Authorization);
 
-      const address = verificationResponse.address;
-      const findUser = await userModel.findOne({ address });
+      const username = verificationResponse.username;
+      const findUser = await UserModel.findOne({ username });
 
       if (findUser) {
         req.user = findUser;
         next();
       } else {
-        next(new HttpException(401, 'Wrong authentication token'));
+        next(AuthException.invalidToken());
       }
     } else {
-      next(new HttpException(404, 'Authentication token missing'));
+      next(AuthException.invalidToken());
     }
   } catch (error) {
-    next(new HttpException(401, 'Wrong authentication token'));
+    next(AuthException.invalidToken());
   }
 };
 

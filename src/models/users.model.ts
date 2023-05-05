@@ -1,35 +1,18 @@
-import { User } from '@interfaces/users.interface';
-import { Document, model, Schema } from 'mongoose';
-
-const userSchema: Schema = new Schema(
-  {
-    address: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    username: {
-      type: String,
-    },
-    profileImage: {
-      type: String,
-    },
-    biography: {
-      type: String,
-      maxLength: 2000,
-    },
-    email: {
-      type: String,
-    },
-    link: {
-      type: String,
-    },
+import BaseSchema from '@/common/schema/BaseSchema';
+import { User } from '@/interfaces/users.interface';
+import { extendSchema } from '@/utils/db';
+import { Document, Schema, model } from 'mongoose';
+const UserSchema: Schema = extendSchema(BaseSchema, {
+  username: {
+    type: String,
+    required: true,
+    unique: true,
   },
-  {
-    timestamps: true,
+  password: {
+    type: String,
+    required: true,
   },
-);
+});
+const UserModel = model<User & Document>('user', UserSchema);
 
-const userModel = model<User & Document>('User', userSchema);
-
-export default userModel;
+export default UserModel;

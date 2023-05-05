@@ -1,5 +1,5 @@
 {
-  "name": "LegendaryEquipmentService",
+  "name": "template-node-using-ts",
   "version": "0.0.0",
   "description": "TypeScript + Mongoose + MongoDB + Express API Server",
   "author": "",
@@ -32,6 +32,7 @@
     "hpp": "^0.2.3",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.4",
+    "moment-timezone": "^0.5.43",
     "mongoose": "^6.5.0",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",

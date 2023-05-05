@@ -1,4 +1,4 @@
-import { CREDENTIALS, LOG_FORMAT, NODE_ENV, ORIGIN, PORT } from '@config';
+import { CREDENTIALS, LOG_FORMAT, NODE_ENV, ORIGIN, PORT, TZ } from '@config';
 import { dbConnection } from '@databases';
 import { Routes } from '@interfaces/routes.interface';
 import errorMiddleware from '@middlewares/error.middleware';
@@ -9,12 +9,14 @@ import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 import hpp from 'hpp';
+import moment from 'moment-timezone';
 import { connect, set } from 'mongoose';
 import morgan from 'morgan';
 import path from 'path';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import authMiddleware from './middlewares/auth.middleware';
+moment().tz(TZ).format();
 
 class App {
   public app: express.Application;
@@ -57,7 +59,9 @@ class App {
         console.log('Connected');
       })
       .catch(err => {
-        console.log('Conntect fail!');
+        console.log(err);
+
+        console.log('Connect fail!');
       });
   }
 

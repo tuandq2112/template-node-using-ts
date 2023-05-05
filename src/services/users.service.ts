@@ -1,40 +1,26 @@
-import { UpdateUserDTO } from '@/dtos/update.user.dto';
-import { CreateUserDto } from '@/dtos/users.dto';
-import { HttpException } from '@exceptions/HttpException';
+import { BaseResponseController } from '@/common/controller/BaseResponseController';
+import { RegisterDTO } from '@/dtos/users.dto';
+import { UserException } from '@/exceptions/user.exception';
 import { User } from '@interfaces/users.interface';
-import userModel from '@models/users.model';
-import { isEmpty } from '@utils/util';
+import UserModel from '@models/users.model';
+import { hash } from 'bcrypt';
 
-class UserService {
-  public users = userModel;
+class UserService extends BaseResponseController {
+  public userModel = UserModel;
 
-  public async findAllUser(): Promise<User[]> {
-    const users: User[] = await this.users.find();
-    return users;
-  }
+  public async register(registerDTO: RegisterDTO): Promise<User> {
+    const findUser = await this.userModel.findOne({ username: registerDTO.username });
 
-  public async findUserByAddress(address: string): Promise<User> {
-    if (isEmpty(address)) throw new HttpException(400, 'address is empty');
-
-    const findUser: User = await this.users.findOne({ address });
-    if (!findUser) throw new HttpException(409, "User doesn't exist");
-
-    return findUser;
-  }
-
-  public async createUser(userData: CreateUserDto): Promise<User> {
-    if (isEmpty(userData)) throw new HttpException(400, 'userData is empty');
-    let findUser: User = await this.users.findOne({ address: userData.address });
-    if (!findUser) {
-      findUser = await this.users.create(userData);
+    if (findUser) {
+      UserException.usernameExisted();
     }
-    return findUser;
-  }
+    const hashedPassword = await hash(registerDTO.password, 10);
 
-  public async updateUser(address: string, updateData: UpdateUserDTO): Promise<User> {
-    if (isEmpty(updateData)) throw new HttpException(400, 'updateData is empty');
-    const updateUser: User = await this.users.findOneAndUpdate({ address }, updateData);
-    return updateUser;
+    const newUser = await this.userModel.create({ ...registerDTO, password: hashedPassword });
+    return newUser;
+  }
+  public async getCurrentInformation(user: User): Promise<User> {
+    return await this.userModel.findOne({ username: user.username });
   }
 }
 export default UserService;

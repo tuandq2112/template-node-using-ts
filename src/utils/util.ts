@@ -1,3 +1,6 @@
+import * as crypto from 'crypto';
+import { Schema } from 'mongoose';
+
 /**
  * @method isEmpty
  * @param {String | Number | Object} value
@@ -17,3 +20,16 @@ export const isEmpty = (value: string | number | object): boolean => {
     return false;
   }
 };
+export const generateRandomString = (length: number): string => {
+  // Create cryptographic random bytes
+  const buffer = crypto.randomBytes(Math.ceil(length / 2));
+
+  // Convert to hex string
+  const hexString = buffer.toString('hex').slice(0, length);
+
+  return hexString;
+};
+
+export function replaceAll(str: string, search: string, replace: string) {
+  return str.split(search).join(replace);
+}
